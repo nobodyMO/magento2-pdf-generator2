@@ -74,7 +74,7 @@ class Processor extends Template
         $isDesignApplied = $this->applyDesignConfig();
 
         $processor = $this->getTemplateFilter()
-            ->setUseSessionInUrl(false)
+           // ->setUseSessionInUrl(false)  forbidden in Magento 2.3.5
             ->setPlainTemplateMode($this->isPlain())
             ->setIsChildTemplate($this->isChildTemplate())
             ->setTemplateProcessor([$this, 'getTemplateContent']);

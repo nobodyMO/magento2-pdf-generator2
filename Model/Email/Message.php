@@ -36,19 +36,20 @@ class Message extends \Magento\Framework\Mail\Message implements MailMessageInte
         $this->mimeMessageFactory = $mimeMessageFactory;
         $this->zendMessage = MailFactory::getInstance();
         $this->zendMessage->setEncoding($charset);
+		$this->attachment=[];
     }
 
-    public function setBodyAttachment($content, $fileName)
+    public function setBodyAttachment($content, $fileName, ?string $fileType='application/pdf')
     {
         $attachmentPart = $this->partFactory->create();
 
         $attachmentPart->setContent($content)
-            ->setType(Mime::TYPE_OCTETSTREAM)
+            ->setType($fileType)
             ->setEncoding(Mime::ENCODING_BASE64)
             ->setFileName($fileName)
             ->setDisposition(Mime::DISPOSITION_ATTACHMENT);
 
-        $this->attachment = $attachmentPart;
+        $this->attachment[] = $attachmentPart;
         return $this;
     }
 
@@ -64,11 +65,9 @@ class Message extends \Magento\Framework\Mail\Message implements MailMessageInte
             $body = self::createHtmlMimeFromString($body);
         }
 
-        $attachment = $this->attachment;
-        if (isset($attachment)) {
+		foreach ($this->attachment as $attachment) {
             $body->addPart($attachment);
         }
-
         $this->zendMessage->setBody($body);
         return $this;
     }
@@ -161,12 +160,14 @@ class Message extends \Magento\Framework\Mail\Message implements MailMessageInte
         return $mimeMessage;
     }
 
-    /**
+     /**
      * {@inheritdoc}
+	 * !!!! MKS Fix for broken DKIM
      */
     public function setBodyHtml($html)
     {
         $this->setMessageType(self::TYPE_HTML);
+		$html=wordwrap($html,800,"\r\n",true);
         return $this->setBody($html);
     }
 

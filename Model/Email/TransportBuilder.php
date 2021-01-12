@@ -178,7 +178,7 @@ class TransportBuilder extends TransportBuilderParent
     
     protected function reset()
     {
-        $this->attachments = [];;
+        $this->attachments = [];
         return parent::reset();
     }    
     

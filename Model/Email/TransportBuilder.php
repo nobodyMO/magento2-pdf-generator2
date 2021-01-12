@@ -352,6 +352,10 @@ class TransportBuilder extends TransportBuilderParent
     protected function reset()
     {
         $this->attachments=[];
+        $this->messageData = [];
+        $this->templateIdentifier = null;
+        $this->templateVars = null;
+        $this->templateOptions = null;      
         return $this;
     }
 

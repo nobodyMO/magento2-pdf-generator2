@@ -174,14 +174,6 @@ class TransportBuilder extends TransportBuilderParent
             $mimePartInterfaceFactory, $addressConverter);
     }
 
-    
-    
-    protected function reset()
-    {
-        $this->attachments = [];
-        return parent::reset();
-    }    
-    
     /**
      * Add cc address
      *
@@ -359,7 +351,7 @@ class TransportBuilder extends TransportBuilderParent
      */
     protected function reset()
     {
-        $this->attachments[]
+        $this->attachments=[];
         return $this;
     }
 

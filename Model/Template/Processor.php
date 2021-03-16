@@ -78,7 +78,7 @@ class Processor extends Template
             ->setPlainTemplateMode($this->isPlain())
             ->setIsChildTemplate($this->isChildTemplate())
             ->setTemplateProcessor([$this, 'getTemplateContent']);
-
+        $processor->setStrictMode(0);
         $processor->setVariables($this->getVariables());
         $this->setUseAbsoluteLinks(true);
         $html = $this->html($processor);

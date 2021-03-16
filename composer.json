@@ -2,7 +2,7 @@
   "name": "eadesignro/module-pdfgenerator",
   "description": "The best pdf generator for Magento. EaDesign PDF Generator",
   "type": "magento2-module",
-  "version": "1.2.18",
+  "version": "1.2.19",
   "autoload": {
     "files": [
       "registration.php"
@@ -33,7 +33,7 @@
     "magento/module-backend": "*",
     "magento/module-sales": "*",
     "magento/framework": "~102.0.1|~103.0.1",
-    "eadesignro/module-eacore": "^0.2.10",
+    "eadesignro/module-eacore": "^0.3.1",
     "mpdf/mpdf": "8.*"
   },
   "require-dev": {

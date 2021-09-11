@@ -2,7 +2,7 @@
   "name": "eadesignro/module-pdfgenerator",
   "description": "The best pdf generator for Magento. EaDesign PDF Generator",
   "type": "magento2-module",
-  "version": "1.2.19",
+  "version": "1.2.30",
   "autoload": {
     "files": [
       "registration.php"
@@ -37,14 +37,14 @@
     "mpdf/mpdf": "8.*"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "~2.13.0",
-    "lusitanian/oauth": "~0.8.10",
-    "magento/magento2-functional-testing-framework": "2.3.9",
-    "pdepend/pdepend": "2.5.2",
+    "friendsofphp/php-cs-fixer": "*",
+    "lusitanian/oauth": "*",
+    "magento/magento2-functional-testing-framework": "*",
+    "pdepend/pdepend": "*",
     "phpmd/phpmd": "@stable",
-    "phpunit/phpunit": "~6.5.0",
-    "sebastian/phpcpd": "~3.0.0",
-    "squizlabs/php_codesniffer": "3.3.1"
+    "phpunit/phpunit": "*",
+    "sebastian/phpcpd": "*",
+    "squizlabs/php_codesniffer": "*"
   },
   "minimum-stability": "dev",
   "prefer-stable": true

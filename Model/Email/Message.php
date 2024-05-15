@@ -3,11 +3,8 @@
 namespace Eadesigndev\Pdfgenerator\Model\Email;
 
 use Magento\Framework\Mail\MailMessageInterface;
-use Zend\Mime\Mime;
-use Zend\Mime\PartFactory;
-use Zend\Mail\MessageFactory as MailFactory;
-use Zend\Mime\MessageFactory as MimeFactory;
-use Zend\Mime\Part;
+use Laminas\Mime\Mime;
+use Laminas\Mime\Part;
 
 /**
  * Class Message
@@ -17,34 +14,27 @@ use Zend\Mime\Part;
 class Message extends \Magento\Framework\Mail\Message implements MailMessageInterface
 {
 
-    private $partFactory;
-
-    private $mimeMessageFactory;
-
+    /**
+     * @var \Laminas\Mail\Message
+     */
     protected $zendMessage;
 
     private $attachment;
 
-    private $messageType = self::TYPE_TEXT;
+    private $messageType = Mime::TYPE_TEXT;
 
     public function __construct(
-        PartFactory $partFactory,
-        MimeFactory $mimeMessageFactory,
         $charset = 'utf-8'
     ) {
-        $this->partFactory = $partFactory;
-        $this->mimeMessageFactory = $mimeMessageFactory;
-        $this->zendMessage = MailFactory::getInstance();
+        $this->zendMessage = new \Laminas\Mail\Message();
         $this->zendMessage->setEncoding($charset);
 		$this->attachment=[];
     }
 
     public function setBodyAttachment($content, $fileName, ?string $fileType='application/pdf')
     {
-        $attachmentPart = $this->partFactory->create();
-
-        $attachmentPart->setContent($content)
-            ->setType($fileType)
+        $attachmentPart = new Part($body);
+		$attachmentPart->setType($fileType)
             ->setEncoding(Mime::ENCODING_BASE64)
             ->setFileName($fileName)
             ->setDisposition(Mime::DISPOSITION_ATTACHMENT);
@@ -152,7 +142,7 @@ class Message extends \Magento\Framework\Mail\Message implements MailMessageInte
 
     private function createHtmlMimeFromString($htmlBody)
     {
-        $htmlPart = $this->partFactory->create(['content' => $htmlBody]);
+        $htmlPart = new Part(['content' => $htmlBody]);
         $htmlPart->setCharset($this->zendMessage->getEncoding());
         $htmlPart->setType(Mime::TYPE_HTML);
         $mimeMessage = $this->mimeMessageFactory->create();

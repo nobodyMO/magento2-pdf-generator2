@@ -24,8 +24,8 @@ use Magento\Framework\Mail\TransportInterface;
 use Magento\Framework\Mail\TransportInterfaceFactory;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Phrase;
-use Zend\Mime\Mime;
-use Zend\Mime\PartFactory;
+use Laminas\Mime\Mime;
+use Laminas\Mime\Part;
 use Magento\Framework\Mail\Template\TransportBuilder as TransportBuilderParent;
 
 class TransportBuilder extends TransportBuilderParent
@@ -127,7 +127,6 @@ class TransportBuilder extends TransportBuilderParent
 
     protected $attachments = [];
 
-    protected $partFactory;
 
     /**
      * TransportBuilder constructor
@@ -169,7 +168,6 @@ class TransportBuilder extends TransportBuilderParent
             ->get(MimePartInterfaceFactory::class);
         $this->addressConverter = $addressConverter ?: $this->objectManager
             ->get(AddressConverter::class);
-        $this->partFactory = $objectManager->get(PartFactory::class);
         parent::__construct($templateFactory, $message, $senderResolver, $objectManager, $mailTransportFactory, $messageFactory, $emailMessageInterfaceFactory, $mimeMessageInterfaceFactory,
             $mimePartInterfaceFactory, $addressConverter);
     }
@@ -443,7 +441,7 @@ class TransportBuilder extends TransportBuilderParent
      */
     public function addAttachment(?string $content, ?string $fileName, ?string $fileType='application/pdf')
     {
-        $attachmentPart = $this->partFactory->create();
+        $attachmentPart = new part();
         $attachmentPart->setContent($content)
             ->setType($fileType)
             ->setFileName($fileName)

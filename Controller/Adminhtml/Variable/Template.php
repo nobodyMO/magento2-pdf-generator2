@@ -18,7 +18,6 @@ use Magento\Framework\Json\Helper\Data as JsonHelperData;
 use Magento\Variable\Model\Variable as VariableModel;
 use Eadesigndev\Pdfgenerator\Model\Email\VariablesFacrory;
 use Magento\Email\Model\BackendTemplate as EmailBackendTemplate;
-use Zend_Json;
 
 /**
  * Class Template
@@ -128,7 +127,7 @@ class Template extends Action
             $template->setData('orig_template_code', $templateId);
             $template->setData(
                 'template_variables',
-                Zend_Json::encode($template->getVariablesOptionArray(true))
+                json_encode($template->getVariablesOptionArray(true))
             );
 
             $templateBlock = $this->_view->getLayout()->createBlock(

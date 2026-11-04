@@ -24,9 +24,8 @@ use Magento\Framework\Mail\TransportInterface;
 use Magento\Framework\Mail\TransportInterfaceFactory;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Phrase;
-use Laminas\Mime\Mime;
-use Laminas\Mime\Part;
 use Magento\Framework\Mail\Template\TransportBuilder as TransportBuilderParent;
+use Symfony\Component\Mime\Part\Multipart\MixedPart;
 
 class TransportBuilder extends TransportBuilderParent
 {
@@ -393,8 +392,9 @@ class TransportBuilder extends TransportBuilderParent
                     new Phrase('Unknown template type')
                 );
         }
-        $mimePart = $this->mimePartInterfaceFactory->create(['content' => $content]);
+        $mimePart = $this->mimePartInterfaceFactory->create(['content' => $content, 'type' => $part['type']]);
         $parts = count($this->attachments) ? array_merge([$mimePart], $this->attachments) : [$mimePart];
+        $this->messageData['encoding'] = $mimePart->getCharset();
         $this->messageData['body'] = $this->mimeMessageInterfaceFactory->create(
             ['parts' => $parts]
         );
@@ -404,6 +404,17 @@ class TransportBuilder extends TransportBuilderParent
             ENT_QUOTES
         );
         $this->message = $this->emailMessageInterfaceFactory->create($this->messageData);
+
+        // Magento >= 2.4.8: MimeMessage übernimmt nur den ersten Text-Teil und verwirft
+        // alle weiteren Teile. Anhänge daher direkt an der Symfony-Nachricht ergänzen.
+        if (count($this->attachments)) {
+            $symfonyMessage = $this->message->getSymfonyMessage();
+            $attachmentParts = [];
+            foreach ($this->attachments as $attachment) {
+                $attachmentParts[] = $attachment->getMimePart();
+            }
+            $symfonyMessage->setBody(new MixedPart($symfonyMessage->getBody(), ...$attachmentParts));
+        }
 
         return $this;
     }
@@ -439,15 +450,15 @@ class TransportBuilder extends TransportBuilderParent
      * @param string|null $fileType
      * @return TransportBuilder
      */
-    public function addAttachment(?string $content, ?string $fileName, ?string $fileType='application/pdf')
+    public function addAttachment(?string $content, ?string $fileName, ?string $fileType = 'application/pdf')
     {
-        $attachmentPart = new part();
-        $attachmentPart->setContent($content)
-            ->setType($fileType)
-            ->setFileName($fileName)
-            ->setDisposition(Mime::DISPOSITION_ATTACHMENT)
-            ->setEncoding(Mime::ENCODING_BASE64);
-        $this->attachments[] = $attachmentPart;
+        $this->attachments[] = $this->mimePartInterfaceFactory->create([
+            'content' => $content,
+            'type' => $fileType,
+            'fileName' => $fileName,
+            'disposition' => MimeInterface::DISPOSITION_ATTACHMENT,
+            'encoding' => MimeInterface::ENCODING_BASE64,
+        ]);
 
         return $this;
     }
